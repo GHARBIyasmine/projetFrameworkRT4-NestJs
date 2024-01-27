@@ -1,10 +1,11 @@
 import { Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { Notification } from './notifications.entity';
-import { Task } from 'src/tasks/tasks/entities/tasks.entity';
+import { NotificationEntity } from './notifications.entity';
+import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
 
-@Entity()
-export class DeadlineNotif extends Notification {
-  @ManyToOne(() => Task)
+@Entity('deadline_notif')
+
+export class DeadlineNotifEntity extends NotificationEntity {
+  @ManyToOne(() => TaskEntity)
   @JoinColumn({ name: 'taskId' })
-  task: Task;
+  task: TaskEntity;
 }

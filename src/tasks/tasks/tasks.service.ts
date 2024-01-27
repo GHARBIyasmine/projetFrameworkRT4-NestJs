@@ -1,33 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Task } from 'src/tasks/tasks/entities/tasks.entity';
+import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
 import { CrudService } from 'src/common/crud/crud.service';
 import { TaskStatus } from './entities/task-status.enum';
-import { User } from 'src/users/users/entities/user.entity';
+import { UserEntity } from 'src/users/users/entities/user.entity';
 import { NotificationService } from 'src/notifications/notifications/services/notifications.service';
-import { Group } from 'src/groups/groups/entities/groups.entity';
+import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 
 
 @Injectable()
-export class TasksService extends CrudService<Task> {
+export class TasksService extends CrudService<TaskEntity> {
   constructor(
-    @InjectRepository(Task)
-    private tasksRepository: Repository<Task>,
-    private notificationService: NotificationService,
-    @InjectRepository(Group)
-    private groupsRepository: Repository<Group>,
+    @InjectRepository(TaskEntity)
+    private tasksRepository: Repository<TaskEntity>,
   ) {
     super(tasksRepository);
   }
 
 
-  async findTasksByStatus(status: TaskStatus): Promise<Task[]> {
+  async findTasksByStatus(status: TaskStatus): Promise<TaskEntity[]> {
     return this.tasksRepository.find({ where: { status } });
   }
 
-  async findTaskCreator(taskId: number): Promise<User | undefined> {
+  async findTaskCreator(taskId: number): Promise<UserEntity | undefined> {
     const task = await this.tasksRepository.findOne({
       where: { id: taskId },
       relations: ['createdBy'], // Load the createdBy relationship
@@ -36,8 +33,6 @@ export class TasksService extends CrudService<Task> {
 
     return task?.createdBy;
   }
-
-
 
   async findTaskDueDate(taskId: number): Promise<Date | null> {
     const task = await this.tasksRepository.findOne({
@@ -50,6 +45,16 @@ export class TasksService extends CrudService<Task> {
     }
 
     return task.dueDate;
+  }
+
+  async findTaskGroup(taskId: number): Promise<GroupEntity | undefined> {
+    const task = await this.tasksRepository.findOne({
+      where: { id: taskId },
+      relations: ['group'], // Load the group relationship
+      select: ['group'], // Select only the group property
+    });
+
+    return task?.group;
   }
 
 

@@ -1,12 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { User } from 'src/users/users/entities/user.entity';
-import { Group } from 'src/groups/groups/entities/groups.entity';
+import { UserEntity } from 'src/users/users/entities/user.entity';
+import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { TaskStatus } from './task-status.enum';
-import { NewTaskNotif } from 'src/notifications/notifications/entities/new-task-notif.entity';
-import { DeadlineNotif } from 'src/notifications/notifications/entities/deadline-notif.entity';
+import { NewTaskNotifEntity } from 'src/notifications/notifications/entities/new-task-notif.entity';
+import { DeadlineNotifEntity } from 'src/notifications/notifications/entities/deadline-notif.entity';
+import { Timestampentity} from  'src/Generics/timestampentity'
 
-@Entity()
-export class Task {
+@Entity('task')
+export class TaskEntity extends Timestampentity{
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,18 +25,18 @@ export class Task {
   @Column({ type: 'date', nullable: true })
   dueDate: Date | null;
 
-  @ManyToOne(() => User, user => user.createdTasks)
-  createdBy: User;
+  @ManyToOne(() => UserEntity, user => user.createdTasks)
+  createdBy: UserEntity;
 
-  @ManyToOne(() => User, user => user.assignedTasks, { nullable: true })
-  assignedTo: User | null;
+  @ManyToOne(() => UserEntity, user => user.assignedTasks, { nullable: true })
+  assignedTo: UserEntity | null;
 
-  @ManyToOne(() => Group, group => group.tasks)
-  group: Group;
+  @ManyToOne(() => GroupEntity, group => group.tasks)
+  group: GroupEntity;
 
-  @OneToMany(() => NewTaskNotif, newTaskNotif => newTaskNotif.task)
-  newTaskNotifications: NewTaskNotif[];
+  @OneToMany(() => NewTaskNotifEntity, newTaskNotif => newTaskNotif.task)
+  newTaskNotifications: NewTaskNotifEntity[];
 
-  @OneToMany(() => DeadlineNotif, deadlineNotif => deadlineNotif.task)
-  deadlineNotifications: DeadlineNotif[];
+  @OneToMany(() => DeadlineNotifEntity, deadlineNotif => deadlineNotif.task)
+  deadlineNotifications: DeadlineNotifEntity[];
 }

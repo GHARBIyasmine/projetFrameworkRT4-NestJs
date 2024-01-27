@@ -1,11 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
-import { User } from 'src/users/users/entities/user.entity';
-import { Task } from 'src/tasks/tasks/entities/tasks.entity';
-import { Resource } from 'src/resources/resources/entities/resources.entity';
-import { Notification } from 'src/notifications/notifications/entities/notifications.entity';
+import { UserEntity } from 'src/users/users/entities/user.entity';
+import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
+import { ResourceEntity } from 'src/resources/resources/entities/resources.entity';
+import { NotificationEntity } from 'src/notifications/notifications/entities/notifications.entity';
+import { Timestampentity} from  'src/Generics/timestampentity'
+import { ResourcesService } from 'src/resources/resources/resources.service';
+import { GroupType } from './group-type.enum';
 
-@Entity()
-export class Group {
+@Entity('group')
+export class GroupEntity extends Timestampentity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -15,18 +18,21 @@ export class Group {
   @Column()
   description: string;
 
-  @ManyToOne(() => User, user => user.ownedGroups)
-  owner: User;
+  @Column({ type: 'enum', enum: GroupType, default: GroupType.PRIVATE })
+  type: GroupType;
 
-  @ManyToMany(() => User, user => user.memberOfGroups)
-  members: User[];
+  @ManyToOne(() => UserEntity, user => user.ownedGroups)
+  owner: UserEntity;
 
-  @OneToMany(() => Task, task => task.group)
-  tasks: Task[];
+  @ManyToMany(() => UserEntity, user => user.memberOfGroups)
+  members: UserEntity[];
 
-  @OneToMany(() => Resource, resource => resource.group)
-  resources: Resource[];
+  @OneToMany(() => TaskEntity, task => task.group)
+  tasks: TaskEntity[];
 
-  @OneToMany(() => Notification, notification => notification.group)
-  notifications: Notification[];
+  @OneToMany(() => ResourceEntity, resource => resource.group)
+  resources: ResourceEntity[];
+
+  @OneToMany(() => NotificationEntity, notification => notification.group)
+  notifications: NotificationEntity[];
 }

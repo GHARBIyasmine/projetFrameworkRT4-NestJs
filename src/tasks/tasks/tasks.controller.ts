@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put,Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put,Query, ParseIntPipe, NotFoundException } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -13,9 +13,14 @@ export class TasksController {
     return this.tasksService.create(createTaskDto);
   }
 
-  @Get()
-  findAllTasks() {
-    return this.tasksService.findAll();
+
+  @Get(':id/duedate')
+  async getTaskDueDate(@Param('id') taskId: number): Promise<Date | null> {
+    try {
+      return await this.tasksService.findTaskDueDate(taskId);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
   @Get(':id')
@@ -23,8 +28,14 @@ export class TasksController {
     return this.tasksService.findOne(id);
   }
 
+  @Get()
+  findAllTasks() {
+    return this.tasksService.findAll();
+  }
+
+  
   @Put(':id')
-  updateTask(@Param('id') id: number, @Body() updateTaskDto: UpdateTaskDto) {
+  updateTask(@Param('id', ParseIntPipe) id: number, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(id, updateTaskDto);
   }
 
@@ -37,4 +48,5 @@ export class TasksController {
   findTasksByStatus(@Query('status') status: TaskStatus) {
     return this.tasksService.findTasksByStatus(status);
   }
+
 }

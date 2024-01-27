@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable} from 'typeorm';
-import { Group } from 'src/groups/groups/entities/groups.entity';
-import { Task } from 'src/tasks/tasks/entities/tasks.entity';
-import { Resource } from 'src/resources/resources/entities/resources.entity';
-@Entity()
-export class User {
+import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
+import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
+import { ResourceEntity } from 'src/resources/resources/entities/resources.entity';
+import { Timestampentity} from  'src/Generics/timestampentity'
+@Entity('user')
+export class UserEntity extends Timestampentity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,19 +19,19 @@ export class User {
 
 
 
-  @OneToMany(() => Group, group => group.owner)
-  ownedGroups: Group[];
+  @OneToMany(() => GroupEntity, group => group.owner)
+  ownedGroups: GroupEntity[];
 
-  @ManyToMany(() => Group, group => group.members)
+  @ManyToMany(() => GroupEntity, group => group.members)
   @JoinTable()
-  memberOfGroups: Group[];
+  memberOfGroups: GroupEntity[];
 
-  @OneToMany(() => Task, task => task.createdBy)
-  createdTasks: Task[];
+  @OneToMany(() => TaskEntity, task => task.createdBy)
+  createdTasks: TaskEntity[];
 
-  @OneToMany(() => Task, task => task.assignedTo)
-  assignedTasks: Task[];
+  @OneToMany(() => TaskEntity, task => task.assignedTo)
+  assignedTasks: TaskEntity[];
 
-  @OneToMany(() => Resource, resource => resource.uploadedBy)
-  uploadedResources: Resource[];
+  @OneToMany(() => ResourceEntity, resource => resource.uploadedBy)
+  uploadedResources: ResourceEntity[];
 }

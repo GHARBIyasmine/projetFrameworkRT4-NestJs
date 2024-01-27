@@ -1,10 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { User } from 'src/users/users/entities/user.entity';
-import { Group } from 'src/groups/groups/entities/groups.entity';
-import { NewResourceNotif } from 'src/notifications/notifications/entities/new-resource-notif.entity';
+import { UserEntity } from 'src/users/users/entities/user.entity';
+import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
+import { NewResourceNotifEntity } from 'src/notifications/notifications/entities/new-resource-notif.entity';
+import { Timestampentity} from  'src/Generics/timestampentity'
 
-@Entity()
-export class Resource {
+@Entity('resource')
+export class ResourceEntity extends  Timestampentity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -15,12 +16,12 @@ export class Resource {
   url: string; 
 
 
-  @ManyToOne(() => User, user => user.uploadedResources)
-  uploadedBy: User;
+  @ManyToOne(() => UserEntity, user => user.uploadedResources)
+  uploadedBy: UserEntity;
 
-  @ManyToOne(() => Group, group => group.resources)
-  group: Group;
+  @ManyToOne(() => GroupEntity, group => group.resources)
+  group: GroupEntity;
 
-  @OneToMany(() => NewResourceNotif, newResourceNotif => newResourceNotif.resource)
-  newResourceNotifications: NewResourceNotif[];
+  @OneToMany(() => NewResourceNotifEntity, newResourceNotif => newResourceNotif.resource)
+  newResourceNotifications: NewResourceNotifEntity[];
 }

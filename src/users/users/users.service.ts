@@ -2,15 +2,25 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CrudService } from 'src/common/crud/crud.service';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
-export class UsersService extends CrudService<User>{
+export class UsersService extends CrudService<UserEntity>{
     constructor(
-        @InjectRepository(User)
-        private usersRepository: Repository<User>,
+        @InjectRepository(UserEntity)
+        private usersRepository: Repository<UserEntity>,
       ) {
         super(usersRepository);
+      }
+
+      async findUserOwnedGroups(userId: number) {
+        const user = await this.usersRepository.findOne({
+          where: { id: userId },
+          relations: ['ownedGroups'], 
+          select: ['ownedGroups'],
+        });
+    
+        return user?.ownedGroups;
       }
 
 

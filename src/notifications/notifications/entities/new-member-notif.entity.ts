@@ -1,7 +1,11 @@
-import { Entity } from 'typeorm';
-import { Notification } from './notifications.entity';
+import { Entity, Column } from 'typeorm';
+import { NotificationEntity } from './notifications.entity';
 
-@Entity()
-export class NewMemberNotif extends Notification {
+
+@Entity('new_member_notif')
+export class NewMemberNotifEntity extends NotificationEntity {
+
+    @Column()
+  newMemberName: string;
 
 }

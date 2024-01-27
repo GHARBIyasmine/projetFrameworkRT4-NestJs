@@ -1,25 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Group } from 'src/groups/groups/entities/groups.entity';
-import { User } from 'src/users/users/entities/user.entity';
+import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
+import { UserEntity } from 'src/users/users/entities/user.entity';
 import { CrudService } from 'src/common/crud/crud.service';
 import { NotificationService } from 'src/notifications/notifications/services/notifications.service';
-import { Task } from 'src/tasks/tasks/entities/tasks.entity';
-import { Resource } from 'src/resources/resources/entities/resources.entity';
+import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
+import { ResourceEntity } from 'src/resources/resources/entities/resources.entity';
 
 
 @Injectable()
-export class GroupsService extends CrudService<Group> {
+export class GroupsService extends CrudService<GroupEntity> {
   constructor(
-    @InjectRepository(Group)
-    private groupsRepository: Repository<Group>,
-    private notificationService: NotificationService
+    @InjectRepository(GroupEntity)
+    private groupsRepository: Repository<GroupEntity>,
   ) {
     super(groupsRepository);
   }
 
-  async getGroupMembers(groupId: number): Promise<User[]> {
+  async getGroupMembers(groupId: number): Promise<UserEntity[]> {
     const group = await this.groupsRepository.findOne({
       where: { id: groupId },
       relations: ['members', 'owner'],
@@ -33,7 +32,7 @@ export class GroupsService extends CrudService<Group> {
   }
 
 // Retrive the Group Owner
-  async getGroupOwner(groupId: number): Promise<User> {
+  async getGroupOwner(groupId: number): Promise<UserEntity> {
     const group = await this.groupsRepository.findOne({
       where: { id: groupId },
       relations: ['owner']
@@ -48,7 +47,7 @@ export class GroupsService extends CrudService<Group> {
 
 
  // retrieve all tasks associated with a particular group.
-async getTasksOfGroup(groupId: number): Promise<Task[]> {
+async getTasksOfGroup(groupId: number): Promise<TaskEntity[]> {
   const groupWithTasks = await this.groupsRepository.findOne({
     where: { id: groupId },
     relations: ['tasks']
@@ -62,7 +61,7 @@ async getTasksOfGroup(groupId: number): Promise<Task[]> {
 }
 
 //retrieve all resources associated with a particular group.
-async getResourcesOfGroup(groupId: number): Promise<Resource[]> {
+async getResourcesOfGroup(groupId: number): Promise<ResourceEntity[]> {
   const groupWithResources = await this.groupsRepository.findOne({
     where: { id: groupId },
     relations: ['resources']

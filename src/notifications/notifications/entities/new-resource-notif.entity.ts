@@ -1,10 +1,11 @@
 import { Entity, ManyToOne, JoinColumn } from 'typeorm';
-import { Notification } from './notifications.entity';
-import { Resource } from 'src/resources/resources/entities/resources.entity'; 
+import { NotificationEntity } from './notifications.entity';
+import { ResourceEntity } from 'src/resources/resources/entities/resources.entity'; 
 
-@Entity()
-export class NewResourceNotif extends Notification {
-  @ManyToOne(() => Resource)
+@Entity('new_resource_notif')
+export class NewResourceNotifEntity extends NotificationEntity {
+    
+  @ManyToOne(() => ResourceEntity)
   @JoinColumn({ name: 'resourceId' })
-  resource: Resource;
+  resource: ResourceEntity;
 }

@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
+import { ParseIntPipe } from '@nestjs/common';
+import { UserEntity } from 'src/users/users/entities/user.entity';
 
 @Controller('groups')
 export class GroupsController {
@@ -12,9 +14,9 @@ export class GroupsController {
     return this.groupsService.create(createGroupDto);
   }
 
-  @Get()
-  findAllGroups() {
-    return this.groupsService.findAll();
+  @Get(':id/members')
+  async getGroupMembers(@Param('id') groupId: number): Promise<UserEntity[]> {
+    return this.groupsService.getGroupMembers(groupId);
   }
 
   @Get(':id')
@@ -22,8 +24,13 @@ export class GroupsController {
     return this.groupsService.findOne(id);
   }
 
+  @Get()
+  findAllGroups() {
+    return this.groupsService.findAll();
+  }
+
   @Put(':id')
-  updateGroup(@Param('id') id: number, @Body() updateGroupDto: UpdateGroupDto) {
+  updateGroup(@Param('id', ParseIntPipe) id: number, @Body() updateGroupDto: UpdateGroupDto) {
     return this.groupsService.update(id, updateGroupDto);
   }
 
