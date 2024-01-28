@@ -18,7 +18,9 @@ import { GroupsModule } from './groups/groups/groups.module';
 import { TasksModule } from './tasks/tasks/tasks.module';
 import { ResourcesModule } from './resources/resources/resources.module';
 import { NotificationsModule } from './notifications/notifications/notifications.module';
+
 import { TagModule } from './tag/tag.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -44,11 +46,14 @@ import { TagModule } from './tag/tag.module';
     TypeOrmModule.forFeature([
       UserEntity , GroupEntity, TaskEntity, ResourceEntity, NotificationEntity,NewMemberNotifEntity,NewResourceNotifEntity,NewTaskNotifEntity,DeadlineNotifEntity
     ]), 
+
      
     UsersModule,
     GroupsModule,
     TasksModule,
     TagModule,
+    AuthModule,
+
   ],
   
   controllers: [AppController],

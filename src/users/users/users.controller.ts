@@ -5,10 +5,47 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ParseIntPipe } from '@nestjs/common';
 import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { UserEntity } from './entities/user.entity';
+<<<<<<< HEAD
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+=======
+import { LoginResponseI, UserI } from './user.interface';
+import { DtoHelperService } from './dto/dto-helper.service';
+import { LoginUserDto } from './dto/login-user.dto';
+
+@Controller('users')
+export class UsersController {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly dtoHelperService: DtoHelperService,
+    ) {}
+
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto): Promise<UserI> {
+    const userEntity: UserI = await this.dtoHelperService.createUserDtoToEntity(
+      createUserDto,
+    );
+    return this.usersService.create(userEntity);
+  }
+
+  @Post('login')
+  async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponseI> {
+    const userEntity: UserI = await this.dtoHelperService.loginUserDtoToEntity(
+      loginUserDto,
+    );
+    const jwt: string = await this.usersService.login(userEntity);
+    return {
+      access_token: jwt,
+      token_type: 'JWT',
+      expires_in: 10000,
+    };
+  }
+
+
+
+>>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {

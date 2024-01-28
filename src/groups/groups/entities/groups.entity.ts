@@ -8,6 +8,7 @@ import { ResourcesService } from 'src/resources/resources/resources.service';
 import { GroupType } from './group-type.enum';
 import { TagEntity } from 'src/tag/entities/tag.entity';
 
+
 @Entity('group')
 export class GroupEntity extends Timestampentity {
   @PrimaryGeneratedColumn()
@@ -22,10 +23,11 @@ export class GroupEntity extends Timestampentity {
   @Column({ type: 'enum', enum: GroupType, default: GroupType.PRIVATE })
   type: GroupType;
 
+
   @ManyToMany(() => TagEntity)
   @JoinTable()
   tags: TagEntity[];
-
+  
   @ManyToOne(() => UserEntity, user => user.ownedGroups)
   owner: UserEntity;
 
