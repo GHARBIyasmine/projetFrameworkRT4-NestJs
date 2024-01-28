@@ -1,10 +1,6 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { OmitType } from '@nestjs/mapped-types';
+import { CreateUserDto } from './create-user.dto';
 
-// with the dtos we can check if the payload that the user sends fullfills our conditions, for example, if the mail is an email
-export class LoginUserDto {
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  password: string;
+export class LoginUserDto extends OmitType(CreateUserDto,['username']){
+  
 }

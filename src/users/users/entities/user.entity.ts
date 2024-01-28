@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable} from 'typeorm';
-=======
+
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, BeforeInsert, BeforeUpdate} from 'typeorm';
->>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
 import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
 import { ResourceEntity } from 'src/resources/resources/entities/resources.entity';
@@ -15,24 +12,16 @@ export class UserEntity extends Timestampentity {
   @Column({ unique: true })
   username: string;
 
-<<<<<<< HEAD
-  @Column()
-  password: string; 
+
   
-  @Column()
-  email: string;
-
-
-=======
-  //
   @Column({ unique: true })
   email: string;
 
 
   @Column()
-  password: string; // Consider storing hashed passwords only
+  password: string; 
   
-  //
+  
   @BeforeInsert()
   @BeforeUpdate()
   emailAndUsernameToLowerCase() {
@@ -40,7 +29,6 @@ export class UserEntity extends Timestampentity {
     this.username = this.username.toLowerCase();
   }
 
->>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
 
   @OneToMany(() => GroupEntity, group => group.owner)
   ownedGroups: GroupEntity[];

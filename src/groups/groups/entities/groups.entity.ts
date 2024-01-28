@@ -24,10 +24,10 @@ export class GroupEntity extends Timestampentity {
   type: GroupType;
 
 
-  @ManyToMany(() => TagEntity)
+  @ManyToMany(() => TagEntity, tag => tag.groups)
   @JoinTable()
   tags: TagEntity[];
-  
+
   @ManyToOne(() => UserEntity, user => user.ownedGroups)
   owner: UserEntity;
 

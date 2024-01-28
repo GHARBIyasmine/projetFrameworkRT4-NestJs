@@ -5,12 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ParseIntPipe } from '@nestjs/common';
 import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { UserEntity } from './entities/user.entity';
-<<<<<<< HEAD
 
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-=======
 import { LoginResponseI, UserI } from './user.interface';
 import { DtoHelperService } from './dto/dto-helper.service';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -45,11 +40,15 @@ export class UsersController {
 
 
 
->>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
 
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @Get('all')
+  async findAllUsers() {
+    return this.usersService.findAll();
   }
 
   @Get(':id/owned-groups')
@@ -64,10 +63,7 @@ export class UsersController {
 
 
 
-  @Get()
-  async findAllUsers() {
-    return this.usersService.findAll();
-  }
+  
 
   
   @Put(':id')

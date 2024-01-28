@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CrudService } from 'src/common/crud/crud.service';
-import { UserEntity } from './entities/user.entity';
-=======
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
@@ -12,24 +6,20 @@ import { CrudService } from 'src/common/crud/crud.service';
 import { UserEntity } from './entities/user.entity';
 import { UserI } from './user.interface';
 import { AuthService } from 'src/auth/services/auth.service';
->>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
+
 
 @Injectable()
 export class UsersService extends CrudService<UserEntity>{
     constructor(
         @InjectRepository(UserEntity)
-<<<<<<< HEAD
-        private usersRepository: Repository<UserEntity>,
-=======
+
         private readonly usersRepository: Repository<UserEntity>,
         private readonly authService: AuthService,
->>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
       ) {
         super(usersRepository);
       }
 
-<<<<<<< HEAD
-=======
+
 
 
       async create(entity: DeepPartial<UserEntity>): Promise<UserEntity> {
@@ -129,7 +119,7 @@ export class UsersService extends CrudService<UserEntity>{
 
 
 
->>>>>>> d6c4ac98252d9a302c95b0b042b41914a7c303d0
+
       async findUserOwnedGroups(userId: number) {
         const user = await this.usersRepository.findOne({
           where: { id: userId },

@@ -21,6 +21,7 @@ import { NotificationsModule } from './notifications/notifications/notifications
 
 import { TagModule } from './tag/tag.module';
 import { AuthModule } from './auth/auth.module';
+import { TagEntity } from './tag/entities/tag.entity';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { AuthModule } from './auth/auth.module';
       }),
     }),
     TypeOrmModule.forFeature([
-      UserEntity , GroupEntity, TaskEntity, ResourceEntity, NotificationEntity,NewMemberNotifEntity,NewResourceNotifEntity,NewTaskNotifEntity,DeadlineNotifEntity
+      UserEntity , GroupEntity, TaskEntity, ResourceEntity, NotificationEntity,NewMemberNotifEntity,NewResourceNotifEntity,NewTaskNotifEntity,DeadlineNotifEntity,
+      TagEntity
     ]), 
 
      
