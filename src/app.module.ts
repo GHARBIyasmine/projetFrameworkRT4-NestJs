@@ -18,6 +18,8 @@ import { GroupsModule } from './groups/groups/groups.module';
 import { TasksModule } from './tasks/tasks/tasks.module';
 import { ResourcesModule } from './resources/resources/resources.module';
 import { NotificationsModule } from './notifications/notifications/notifications.module';
+import { TagModule } from './tag/tag.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,7 +44,11 @@ import { NotificationsModule } from './notifications/notifications/notifications
     TypeOrmModule.forFeature([
       UserEntity , GroupEntity, TaskEntity, ResourceEntity, NotificationEntity,NewMemberNotifEntity,NewResourceNotifEntity,NewTaskNotifEntity,DeadlineNotifEntity
     ]), 
-    UsersModule,GroupsModule,TasksModule,
+     
+    UsersModule,
+    GroupsModule,
+    TasksModule,
+    TagModule,
   ],
   
   controllers: [AppController],

@@ -12,7 +12,7 @@ export class UserEntity extends Timestampentity {
   username: string;
 
   @Column()
-  password: string; // Consider storing hashed passwords only
+  password: string; 
   
   @Column()
   email: string;
