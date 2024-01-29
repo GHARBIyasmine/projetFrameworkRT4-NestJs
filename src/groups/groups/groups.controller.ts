@@ -1,17 +1,22 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { ParseIntPipe } from '@nestjs/common';
 import { UserEntity } from 'src/users/users/entities/user.entity';
+import { User } from 'src/decorators/user.decorators';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}
 
-  @Post()
-  createGroup(@Body() createGroupDto: CreateGroupDto) {
-    return this.groupsService.create(createGroupDto);
+  @Post('new')
+  @UseGuards(JwtAuthGuard)
+  createGroup(
+    @Body() createGroupDto: CreateGroupDto,
+    @User() user: UserEntity) {
+    return this.groupsService.createNewGroup(createGroupDto, user);
   }
 
   @Get(':id/members')

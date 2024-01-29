@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,6 +9,7 @@ import { UserEntity } from './entities/user.entity';
 import { LoginResponseI, UserI } from './user.interface';
 import { DtoHelperService } from './dto/dto-helper.service';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('users')
 export class UsersController {
@@ -17,8 +18,8 @@ export class UsersController {
     private readonly dtoHelperService: DtoHelperService,
     ) {}
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserI> {
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto): Promise<UserI> {
     const userEntity: UserI = await this.dtoHelperService.createUserDtoToEntity(
       createUserDto,
     );
@@ -47,6 +48,7 @@ export class UsersController {
   }
 
   @Get('all')
+  @UseGuards(JwtAuthGuard)
   async findAllUsers() {
     return this.usersService.findAll();
   }

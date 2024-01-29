@@ -9,7 +9,13 @@ export class TagEntity {
     @Column({ unique: true })
     value: string;
   
-    @ManyToMany(() => GroupEntity, group => group.tags)
+    @ManyToMany(
+        () => GroupEntity,
+        group => group.tags,
+        {
+            cascade: ['insert', 'update'],
+            
+        })
     groups: GroupEntity[];
 
 }

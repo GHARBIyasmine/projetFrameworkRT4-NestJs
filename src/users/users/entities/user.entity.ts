@@ -4,6 +4,7 @@ import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
 import { ResourceEntity } from 'src/resources/resources/entities/resources.entity';
 import { Timestampentity} from  'src/Generics/timestampentity'
+import { UserRoleEnum } from './user-role.enum';
 @Entity('user')
 export class UserEntity extends Timestampentity {
   @PrimaryGeneratedColumn()
@@ -17,9 +18,21 @@ export class UserEntity extends Timestampentity {
   @Column({ unique: true })
   email: string;
 
+  @Column()
+  salt: string 
+
+  @Column({
+    type: 'enum',
+    enum: UserRoleEnum,
+    default: UserRoleEnum.USER
+  })
+  role: string
+
 
   @Column()
   password: string; 
+
+  
   
   
   @BeforeInsert()
@@ -30,19 +43,49 @@ export class UserEntity extends Timestampentity {
   }
 
 
-  @OneToMany(() => GroupEntity, group => group.owner)
+  @OneToMany(
+    () => GroupEntity,
+    group => group.owner,
+    {
+      cascade: ['insert', 'update'],
+      nullable: true,
+      // eager: true
+    })
   ownedGroups: GroupEntity[];
 
-  @ManyToMany(() => GroupEntity, group => group.members)
+  @ManyToMany(
+    () => GroupEntity,
+    group => group.members,
+    {
+      cascade: ['insert', 'update'],
+      nullable: true,
+      // eager: true
+    })
   @JoinTable()
   memberOfGroups: GroupEntity[];
 
-  @OneToMany(() => TaskEntity, task => task.createdBy)
+  @OneToMany(
+    () => TaskEntity,
+    task => task.createdBy,
+    {
+      cascade: ['insert', 'update'],
+      nullable: true,
+      eager: true
+    })
   createdTasks: TaskEntity[];
 
-  @OneToMany(() => TaskEntity, task => task.assignedTo)
+  @OneToMany(
+    () => TaskEntity,
+    task => task.assignedTo,
+    {
+      cascade: ['insert', 'update'],
+      nullable: true,
+      eager: true
+    })
   assignedTasks: TaskEntity[];
 
   @OneToMany(() => ResourceEntity, resource => resource.uploadedBy)
   uploadedResources: ResourceEntity[];
+
+  
 }

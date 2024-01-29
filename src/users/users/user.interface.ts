@@ -1,3 +1,4 @@
+import { UserRoleEnum } from "./entities/user-role.enum";
 
 
 export interface UserI {
@@ -5,6 +6,8 @@ export interface UserI {
   username?: string;
   email?: string;
   password?: string;
+  salt?: string;
+  role?: string
 }
 
 export interface LoginResponseI {

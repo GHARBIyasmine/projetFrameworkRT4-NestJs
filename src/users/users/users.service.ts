@@ -6,8 +6,9 @@ import { CrudService } from 'src/common/crud/crud.service';
 import { UserEntity } from './entities/user.entity';
 import { UserI } from './user.interface';
 import { AuthService } from 'src/auth/services/auth.service';
+import { PayloadI } from 'src/interfaces/payload.interface';
 
-
+const bcrypt = require('bcrypt');
 @Injectable()
 export class UsersService extends CrudService<UserEntity>{
     constructor(
@@ -28,10 +29,8 @@ export class UsersService extends CrudService<UserEntity>{
         const usernameExists: boolean = await this.usernameExists(newUser.username);
 
         if (emailExists === false && usernameExists === false) {
-          const passwordHash: string = await this.authService.hashPassword(
-            newUser.password,
-          );
-          newUser.password = passwordHash;
+          newUser.salt = await bcrypt.genSalt()
+          newUser.password = await bcrypt.hash(newUser.password, newUser.salt);
           newUser.email = newUser.email.toLowerCase();
           newUser.username = newUser.username.toLowerCase();
 
@@ -50,6 +49,7 @@ export class UsersService extends CrudService<UserEntity>{
 
       async login(user: UserI): Promise<string> {
         const foundUser: UserI = await this.findByEmail(user.email);
+        console.log('found user', foundUser)
     
         if (foundUser) {
           const passwordsMatching: boolean =
@@ -59,8 +59,15 @@ export class UsersService extends CrudService<UserEntity>{
             );
     
           if (passwordsMatching === true) {
-            const payload: UserI = await this.findOne(foundUser.id);
-            return this.authService.generateJwt(payload);
+            
+            const payload: PayloadI = {
+              user: {
+                username: foundUser.username,
+              role: foundUser.role
+              }
+            };
+            console.log(payload)
+            return this.authService.generateJwt(payload.user);
           } else {
             throw new HttpException(
               'Login was not successfull, wrong credentials',
@@ -87,7 +94,7 @@ export class UsersService extends CrudService<UserEntity>{
       private async findByEmail(email: string): Promise<UserI> {
         return this.usersRepository.findOne({
           where: { email },
-          select: ['id', 'email', 'password', 'username'],
+          select: ['id', 'email', 'password', 'username', 'role'],
         });
       }
     

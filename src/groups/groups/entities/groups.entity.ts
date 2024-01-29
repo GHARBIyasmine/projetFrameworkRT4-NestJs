@@ -24,17 +24,46 @@ export class GroupEntity extends Timestampentity {
   type: GroupType;
 
 
-  @ManyToMany(() => TagEntity, tag => tag.groups)
+  @ManyToMany(
+    () => TagEntity,
+    tag => tag.groups,
+    {
+      cascade: ['update'],
+      nullable: true,
+      // eager: true
+    }
+    )
   @JoinTable()
   tags: TagEntity[];
 
-  @ManyToOne(() => UserEntity, user => user.ownedGroups)
+  @ManyToOne(
+    () => UserEntity,
+    user => user.ownedGroups,
+    {
+      cascade: ['insert', 'update'],
+      nullable: false,
+      eager: true
+    })
   owner: UserEntity;
 
-  @ManyToMany(() => UserEntity, user => user.memberOfGroups)
+  @ManyToMany(
+    () => UserEntity,
+    user => user.memberOfGroups,
+    {
+      cascade: ['insert', 'update'],
+      nullable: true,
+      eager: true
+    })
   members: UserEntity[];
 
-  @OneToMany(() => TaskEntity, task => task.group)
+  @OneToMany(
+    () => TaskEntity,
+    task => task.group,
+    {
+      cascade: ['insert', 'update'],
+      nullable: true,
+      eager: true
+    })
   tasks: TaskEntity[];
 
   @OneToMany(() => ResourceEntity, resource => resource.group)
