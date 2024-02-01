@@ -47,6 +47,19 @@ export class TasksService extends CrudService<TaskEntity> {
     return task.dueDate;
   }
 
+  // async findTasksByUser(userId: number): Promise<Pick<TaskEntity, 'dueDate' | 'description'>[]> {
+  //   return this.tasksRepository.createQueryBuilder('task')
+  //     .where('assignedToId = :userId', { userId })
+  //     .select(['task.dueDate', 'task.description'])
+  //     .getRawMany();
+  // }
+  async findTasksByUser(id: number):  Promise<TaskEntity[]> {
+    return this.tasksRepository.find({
+      where: { assignedTo : { id } },
+      select : ['description','dueDate']
+    });
+  }
+
   async findTaskGroup(taskId: number): Promise<GroupEntity | undefined> {
     const task = await this.tasksRepository.findOne({
       where: { id: taskId },

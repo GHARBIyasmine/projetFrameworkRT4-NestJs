@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Param, Delete, Put,Query, ParseIntPipe, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put,Query, ParseIntPipe, NotFoundException, UseGuards } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskStatus } from './entities/task-status.enum';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { User } from 'src/decorators/user.decorators';
+import { UserEntity } from 'src/users/users/entities/user.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -21,6 +24,12 @@ export class TasksController {
     } catch (error) {
       throw new NotFoundException(error.message);
     }
+  }
+
+
+  @Get('details/:userId')
+  async getAllTasksByUser(@Param('userId') userId: number) {
+    return this.tasksService.findTasksByUser(userId);
   }
 
   @Get(':id')
