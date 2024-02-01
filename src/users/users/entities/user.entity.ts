@@ -57,11 +57,10 @@ export class UserEntity extends Timestampentity {
     () => GroupEntity,
     group => group.members,
     {
-      cascade: ['insert', 'update'],
+      cascade: ['insert','update'],
       nullable: true,
       // eager: true
     })
-  @JoinTable()
   memberOfGroups: GroupEntity[];
 
   @OneToMany(
@@ -70,7 +69,7 @@ export class UserEntity extends Timestampentity {
     {
       cascade: ['insert', 'update'],
       nullable: true,
-      eager: true
+      
     })
   createdTasks: TaskEntity[];
 
@@ -80,7 +79,6 @@ export class UserEntity extends Timestampentity {
     {
       cascade: ['insert', 'update'],
       nullable: true,
-      eager: true
     })
   assignedTasks: TaskEntity[];
 

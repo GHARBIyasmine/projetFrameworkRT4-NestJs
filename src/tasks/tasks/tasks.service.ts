@@ -8,11 +8,17 @@ import { UserEntity } from 'src/users/users/entities/user.entity';
 import { NotificationService } from 'src/notifications/notifications/services/notifications.service';
 import { GroupEntity } from 'src/groups/groups/entities/groups.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UsersService } from 'src/users/users/users.service';
+import { UpdateTaskDto } from './dto/update-task.dto';
 
 
 @Injectable()
 export class TasksService extends CrudService<TaskEntity> {
   constructor(
+    private readonly userService: UsersService,
+    @InjectRepository(GroupEntity)
+    private groupRepository: Repository<GroupEntity>,
+
     @InjectRepository(TaskEntity)
     private tasksRepository: Repository<TaskEntity>,
   ) {
@@ -58,6 +64,67 @@ export class TasksService extends CrudService<TaskEntity> {
   }
 
 
+  async createTask(newTaskDto : CreateTaskDto, user: UserEntity, id: number): Promise<Partial<TaskEntity>>{
+    const newTask = this.tasksRepository.create(newTaskDto)
+    newTask.createdBy = user
+    if(newTaskDto.assignee){
+      newTask.assignedTo = await this.userService.findFullUserByUsername(newTaskDto.assignee) 
+    }
 
+    newTask.group = await this.groupRepository.findOneBy({id})
+    const taskCreated = await this.create(newTask)
+    return {
+      id : taskCreated.id,
+      description: taskCreated.description,
+      assignedTo: taskCreated.assignedTo,
+      dueDate: taskCreated.dueDate 
+
+    } 
+
+  }
+
+  async updateTask(updateTaskDto : UpdateTaskDto, id: number):Promise<Partial<TaskEntity>>{
+   
+    const updatedTask = await this.tasksRepository.preload({
+      id,
+      ...updateTaskDto,
+    });
+
+    if(!updatedTask){
+      throw new NotFoundException()
+    }
+
+    else{
+      const savedTask = await this.create(updatedTask)
+      return{
+      id : savedTask.id,
+      description: savedTask.description,
+      assignedTo: savedTask.assignedTo,
+      dueDate: savedTask.dueDate,
+      status: savedTask.status
+      }
+    }
+  }
+
+
+  async getAllTaskByGroup(id: number): Promise<Partial<TaskEntity[]>> {
+    const tasks = await this.tasksRepository
+      .createQueryBuilder('task')
+      .leftJoin('task.group', 'group')
+      .leftJoinAndSelect('task.assignedTo', 'assignee')
+      .select([
+        'task.id',
+        'task.description',
+        'task.dueDate',
+        'assignee.username',
+        'task.status'
+      ])
+      .where('task.group.id = :id', { id })
+      .getMany();
+
+    return tasks;
+  }
+
+  
   
 }

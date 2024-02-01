@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToMany, JoinColumn } from 'typeorm';
 import { UserEntity } from 'src/users/users/entities/user.entity';
 import { TaskEntity } from 'src/tasks/tasks/entities/tasks.entity';
 import { ResourceEntity } from 'src/resources/resources/entities/resources.entity';
@@ -23,14 +23,17 @@ export class GroupEntity extends Timestampentity {
   @Column({ type: 'enum', enum: GroupType, default: GroupType.PRIVATE })
   type: GroupType;
 
+  @Column({ length: 20, unique:true})
+  groupCode: string
+
 
   @ManyToMany(
     () => TagEntity,
     tag => tag.groups,
     {
-      cascade: ['update'],
+      cascade: ['insert','update'],
       nullable: true,
-      // eager: true
+      eager: true
     }
     )
   @JoinTable()
@@ -40,20 +43,20 @@ export class GroupEntity extends Timestampentity {
     () => UserEntity,
     user => user.ownedGroups,
     {
-      cascade: ['insert', 'update'],
+      cascade: ['update'],
       nullable: false,
-      eager: true
     })
+    @JoinColumn({ name: 'ownerId' })
   owner: UserEntity;
 
   @ManyToMany(
     () => UserEntity,
     user => user.memberOfGroups,
     {
-      cascade: ['insert', 'update'],
+      cascade: ['insert','update'],
       nullable: true,
-      eager: true
     })
+    @JoinTable()
   members: UserEntity[];
 
   @OneToMany(

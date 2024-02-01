@@ -22,21 +22,38 @@ export class TaskEntity extends Timestampentity{
   status: TaskStatus;
 
 
-  @Column({ type: 'date', nullable: true })
-  dueDate: Date | null;
+  @Column({ type: 'date'})
+  dueDate: Date ;
 
-  @ManyToOne(() => UserEntity, user => user.createdTasks)
+  @ManyToOne(
+    () => UserEntity,
+    user => user.createdTasks,
+    {
+      eager: true
+    })
   createdBy: UserEntity;
 
-  @ManyToOne(() => UserEntity, user => user.assignedTasks, { nullable: true })
-  assignedTo: UserEntity | null;
+  @ManyToOne(
+    () => UserEntity,
+    user => user.assignedTasks,
+    { nullable: true,
+    eager: true })
+  assignedTo: UserEntity;
 
-  @ManyToOne(() => GroupEntity, group => group.tasks)
+  @ManyToOne(
+    () => GroupEntity,
+    group => group.tasks,
+    {
+      cascade:['update'],
+      onDelete : 'CASCADE'
+
+    })
   group: GroupEntity;
+  newTask: Promise<UserEntity>;
 
-  @OneToMany(() => NewTaskNotifEntity, newTaskNotif => newTaskNotif.task)
-  newTaskNotifications: NewTaskNotifEntity[];
+  // @OneToMany(() => NewTaskNotifEntity, newTaskNotif => newTaskNotif.task)
+  // newTaskNotifications: NewTaskNotifEntity[];
 
-  @OneToMany(() => DeadlineNotifEntity, deadlineNotif => deadlineNotif.task)
-  deadlineNotifications: DeadlineNotifEntity[];
+  // @OneToMany(() => DeadlineNotifEntity, deadlineNotif => deadlineNotif.task)
+  // deadlineNotifications: DeadlineNotifEntity[];
 }

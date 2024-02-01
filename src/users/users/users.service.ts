@@ -7,6 +7,7 @@ import { UserEntity } from './entities/user.entity';
 import { UserI } from './user.interface';
 import { AuthService } from 'src/auth/services/auth.service';
 import { PayloadI } from 'src/interfaces/payload.interface';
+import { UserRoleEnum } from './entities/user-role.enum';
 
 const bcrypt = require('bcrypt');
 @Injectable()
@@ -105,6 +106,13 @@ export class UsersService extends CrudService<UserEntity>{
         });
       }
 
+      async findFullUserByUsername(username: string): Promise<UserEntity>{
+        return this.usersRepository.findOne({
+          where: { username },
+          
+        });
+      }
+
 
 
       private async mailExists(email: string): Promise<boolean> {
@@ -138,4 +146,9 @@ export class UsersService extends CrudService<UserEntity>{
       }
 
 
+
+      isOwnerOrAdmin(objetOwner, user) {
+        console.log(user.role === UserRoleEnum.ADMIN || (objetOwner && objetOwner.id === user.id));
+        return user.role === UserRoleEnum.ADMIN || (objetOwner && objetOwner.id === user.id);
+      }
 }
