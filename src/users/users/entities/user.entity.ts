@@ -32,6 +32,8 @@ export class UserEntity extends Timestampentity {
   @Column()
   password: string; 
 
+  @Column({ type: 'blob', nullable: true })
+  profileImage: Buffer;
   
   
   

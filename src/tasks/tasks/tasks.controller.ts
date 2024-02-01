@@ -48,6 +48,12 @@ export class TasksController {
     }
   }
 
+
+  @Get('details/:userId')
+  async getAllTasksByUser(@Param('userId') userId: number) {
+    return this.tasksService.findTasksByUser(userId);
+  }
+
   @Get(':id')
   findTaskById(@Param('id') id: number) {
     return this.tasksService.findOne(id);

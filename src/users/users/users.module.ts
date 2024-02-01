@@ -13,7 +13,11 @@ import { JwtStrategy } from './strategies/jwt.strategy';
   AuthModule,
 ],
   providers: [UsersService, DtoHelperService, JwtStrategy],
+<<<<<<< HEAD
   controllers: [UsersController],
   exports :[UsersService]
+=======
+  controllers: [UsersController]
+>>>>>>> b55e49b3cfe16d3932d9b75b56e08d210d40075e
 })
 export class UsersModule {}

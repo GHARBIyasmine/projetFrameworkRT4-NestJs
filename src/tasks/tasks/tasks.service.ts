@@ -53,11 +53,19 @@ export class TasksService extends CrudService<TaskEntity> {
     return task.dueDate;
   }
 
+  
+  async findTasksByUser(id: number):  Promise<TaskEntity[]> {
+    return this.tasksRepository.find({
+      where: { assignedTo : { id } },
+      select : ['description','dueDate']
+    });
+  }
+
   async findTaskGroup(taskId: number): Promise<GroupEntity | undefined> {
     const task = await this.tasksRepository.findOne({
       where: { id: taskId },
-      relations: ['group'], // Load the group relationship
-      select: ['group'], // Select only the group property
+      relations: ['group'], 
+      select: ['group'], 
     });
 
     return task?.group;

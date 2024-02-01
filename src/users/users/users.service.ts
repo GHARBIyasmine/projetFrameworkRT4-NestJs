@@ -1,5 +1,5 @@
 
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { CrudService } from 'src/common/crud/crud.service';
@@ -8,6 +8,7 @@ import { UserI } from './user.interface';
 import { AuthService } from 'src/auth/services/auth.service';
 import { PayloadI } from 'src/interfaces/payload.interface';
 import { UserRoleEnum } from './entities/user-role.enum';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 const bcrypt = require('bcrypt');
 @Injectable()
@@ -64,7 +65,7 @@ export class UsersService extends CrudService<UserEntity>{
             const payload: PayloadI = {
               user: {
                 username: foundUser.username,
-              role: foundUser.role
+                role: foundUser.role
               }
             };
             console.log(payload)
@@ -81,8 +82,84 @@ export class UsersService extends CrudService<UserEntity>{
       }
     
 
+      
+      async updatePassword(userId: number, newPassword: string): Promise<UserEntity> {
+        const user = await this.usersRepository.findOne({ where: { id: userId } });
+        
+        if (!user) {
+          throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+    
+        const salt = user.salt;
+        user.password = await bcrypt.hash(newPassword, salt);
+        
+        return this.usersRepository.save(user);
+      } 
+       
+      async updateUserProfileImage(userId : number, imageBuffer: Buffer): Promise<UserI> {
+        console.log("this is the image buffer in service", imageBuffer)
+        const userEntity: UserI = await this.usersRepository.findOne({
+          where: { id: userId },
+        });
+    
+        userEntity.profileImage = imageBuffer;
+        return this.usersRepository.save(userEntity);
+        
+      }
 
+      async updateUser(id: number, updatedUser: UpdateUserDto): Promise<UserEntity> {
+        const newUser = await this.usersRepository.preload({
+          id,
+          ... updatedUser
+        });
+        if(! newUser) {
+          throw new NotFoundException('');
+        }
+        return this.usersRepository.save(newUser);
+     
+      }
+      
+ 
+     async getUserProfileImage(user: UserEntity) {
+        const userEntity: UserI = await this.usersRepository.findOne({
+          where: { id: user.id },
+        });
+        const userImage = userEntity.profileImage;
+        if (!userImage) {
+          throw new HttpException('No image found', HttpStatus.NOT_FOUND);
+        }
+        console.log(userEntity.profileImage)
+        return userEntity.profileImage;
+      }
 
+      async getUsername(user: UserEntity) {
+        const userEntity: UserI = await this.usersRepository.findOne({
+          where: { id: user.id },
+        });
+        const username = userEntity.username;
+        if (!username) {
+          throw new HttpException('No username found', HttpStatus.NOT_FOUND);
+        }
+        return username;
+      }
+
+      async getUserDetails(user: UserEntity) {
+        const userE: UserI = await this.usersRepository.findOne({
+          where: { id: user.id },
+        });
+        if (!userE) {
+          throw new HttpException('No user details found', HttpStatus.NOT_FOUND);
+        }
+        const userDetails = {
+          "id" : userE.id,  
+          "username" : userE.username,
+          "email" : userE.email,
+          "imageUrl": userE.profileImage
+
+        }
+        return userDetails;
+      }
+      
 
       async getOneById(id: number): Promise<UserI> {
         return this.usersRepository.findOneOrFail({
@@ -113,6 +190,14 @@ export class UsersService extends CrudService<UserEntity>{
         });
       }
 
+
+      async removeProfileImage(user: UserEntity) {
+        const u: UserI = await this.usersRepository.findOne({
+          where: { id: user.id },
+        });
+        u.profileImage = null;
+        return this.usersRepository.save(u);
+      }
 
 
       private async mailExists(email: string): Promise<boolean> {

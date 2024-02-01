@@ -6,6 +6,7 @@ export interface UserI {
   username?: string;
   email?: string;
   password?: string;
+  profileImage?: Buffer ;
   salt?: string;
   role?: string
 }
