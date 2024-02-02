@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
-=======
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, UseInterceptors, UploadedFile, Patch, HttpException, HttpStatus } from '@nestjs/common';
->>>>>>> b55e49b3cfe16d3932d9b75b56e08d210d40075e
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,12 +10,9 @@ import { LoginResponseI, UserI } from './user.interface';
 import { DtoHelperService } from './dto/dto-helper.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-<<<<<<< HEAD
-=======
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Multer } from 'multer';
 import { User } from 'src/decorators/user.decorators';
->>>>>>> b55e49b3cfe16d3932d9b75b56e08d210d40075e
 
 @Controller('users')
 export class UsersController {
@@ -50,15 +43,10 @@ export class UsersController {
   }
 
 
-<<<<<<< HEAD
 
 
-  @Post()
-  async createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
 
-=======
+
 @Post(':id/upload-profile-image')
 @UseInterceptors(FileInterceptor('file'))
 @UseGuards(JwtAuthGuard)
@@ -121,7 +109,6 @@ async createUser(@Body() createUserDto: CreateUserDto) {
   return this.usersService.create(createUserDto);
 }
 
->>>>>>> b55e49b3cfe16d3932d9b75b56e08d210d40075e
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async findAllUsers() {
